@@ -1,0 +1,29 @@
+.container{
+    margin: 25px;
+    color: black;
+}
+.autor{
+    font-size: 18px;
+    text-align: left;
+    color: #808080;
+}
+.fecha{
+    font-size: 15px;
+    text-align: left;
+    color: #808080 !important;
+}
+
+.titulo{
+font-size: 45px;
+font-weight: bold;
+text-align: left !important;
+color: black !important;
+margin: 10px;
+}
+.contenido{
+    font-size: 20px;
+    text-align: left;
+    color: #363636;
+    margin-top: 20px;
+    padding: 10px;
+}

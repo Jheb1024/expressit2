@@ -7,11 +7,12 @@ import './AddPost.css';
 import {storage} from '../../Auth/firebase-config';
 import {ref, uploadBytes} from 'firebase/storage';
 import {v4} from 'uuid'
+import {addPostUser} from '../../Models/PostFunctions';
 
-function AddPost() {
+function AddPost({user}) {
   // <Field type="text" name="content" placeholder="Contenido" style={textareaStyle}/>
   const editorRef = useRef(null);
-  const log = () => {
+const log = () => {
     if (value) {
       console.log(value);
     }
@@ -21,9 +22,11 @@ function AddPost() {
   const uploadImage=()=>{
     if(imageUpload==null) return;
     const imageRef = ref(storage, `images/${imageUpload.name + v4()}`);
-    uploadBytes(imageRef,imageUpload).then(()=>{
+    /*uploadBytes(imageRef,imageUpload).then(()=>{
       alert("uploaded")
-    })
+    })*/
+    console.log(imageRef.fullPath);
+    
   }
   const initialValue = "Esperando por algo asombroso..."
   const [value, setValue] = useState(initialValue ?? '');
@@ -42,7 +45,7 @@ function AddPost() {
         <input type='file' onChange={(event)=>{
           setImageUpload(event.target.files[0])
         }}></input>
-        <button onClick={uploadImage}>Subir imagen</button>
+        {/*<button onClick={uploadImage}>Subir imagen</button>*/}
       </div>
       <div className='post'>
        
@@ -60,10 +63,8 @@ function AddPost() {
             return errors;
           }}
           onSubmit={(values, { setSubmitting }) => {
-            setTimeout(() => {
-              alert(JSON.stringify(values, null, 2));
-              setSubmitting(false);
-            }, 400);
+           //Llamamos a la funcion para poder guardar el post y la imagen
+            addPostUser(values.title, value, "Salud",user.uid, imageUpload);
           }}
         >
           {({ isSubmitting }) => (
