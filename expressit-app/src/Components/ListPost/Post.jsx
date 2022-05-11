@@ -38,6 +38,7 @@ function Post() {
                 <div className="titulo">{post.title}</div>
                 <img id='myimg'></img>
                 <div className="contenido" dangerouslySetInnerHTML={{ __html: post.content }} />
+                
             </div>
 
 

@@ -13,6 +13,7 @@ import Post from './Components/ListPost/Post';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { firebaseApp } from './Auth/firebase-config';
 import MyPosts from './Components/ListPost/MyPosts';
+import EditPost from './Components/EditPost/EditPost';
 const auth = getAuth(firebaseApp);
 function App() {
 
@@ -57,6 +58,9 @@ onAuthStateChanged(auth, (usuarioFirebase)=>{
     </Routes>
     <Routes>
       <Route path='/user/myposts' element={usuarioGlobal && <MyPosts user={usuarioGlobal}/>}></Route>
+    </Routes>
+    <Routes>
+      <Route path='/user/editmypost' element={usuarioGlobal && <EditPost user={usuarioGlobal}/>}></Route>
     </Routes> 
 
     </div>

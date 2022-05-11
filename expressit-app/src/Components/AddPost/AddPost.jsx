@@ -4,51 +4,54 @@ import { Editor } from '@tinymce/tinymce-react';
 import '../../../src/Components/Draft.css';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import './AddPost.css';
-import {storage} from '../../Auth/firebase-config';
-import {ref, uploadBytes} from 'firebase/storage';
-import {v4} from 'uuid'
-import {addPostUser} from '../../Models/PostFunctions';
+import { storage } from '../../Auth/firebase-config';
+import { ref, uploadBytes } from 'firebase/storage';
+import { v4 } from 'uuid'
+import { addPostUser } from '../../Models/PostFunctions';
 
-function AddPost({user}) {
-  // <Field type="text" name="content" placeholder="Contenido" style={textareaStyle}/>
-  const editorRef = useRef(null);
-const log = () => {
-    if (value) {
-      console.log(value);
+function AddPost({ user }) {
+  const [categoria, setCategoria] = useState(['General', 'Salud', 'Negocios', 'Vida', 'Tecnología', 'Deportes', 'Literatura']);
+  const [literatura, setLiteratura] = useState(null);
+  const [category, setCategory] = useState('General');
+  const Cat = categoria.map((Cat) => Cat);
+  const handleCategoryChange = (e) => {
+    console.clear()
+    console.log(categoria[e.target.value]);
+    console.log(e.target.value)
+
+    if (categoria[e.target.value] === 'Literatura') {
+      setLiteratura('Literatura');
+    }else{
+      setLiteratura(null);
     }
+
+    setCategory(categoria[e.target.value].toString());
   };
 
-  const [imageUpload, setImageUpload] = useState(null);
-  const uploadImage=()=>{
-    if(imageUpload==null) return;
-    const imageRef = ref(storage, `images/${imageUpload.name + v4()}`);
-    /*uploadBytes(imageRef,imageUpload).then(()=>{
-      alert("uploaded")
-    })*/
-    console.log(imageRef.fullPath);
-    
+  const [lit,setLit] = useState(null);
+  function handleChange(e){
+    setLit({value: e.target.value});
+    console.log(lit);
   }
+
+
+  const [imageUpload, setImageUpload] = useState(null);
   const initialValue = "Esperando por algo asombroso..."
   const [value, setValue] = useState(initialValue ?? '');
   useEffect(() => setValue(initialValue ?? ''), [initialValue]);
+
   return (
     <div>
-      {/*<Editor
-        apiKey='qnppcppwb4gg50aqml9w8o24jjb5zvdqf3nglhidqvfndifz'
-         initialValue={initialValue}
-      value={value}
-      onEditorChange={(newValue, editor) => setValue(newValue)}
-       />
-  <button onClick={log}>Log editor content</button> */}
+
       <h1>Escribir un nuevo post</h1>
       <div className='image'>
-        <input type='file' onChange={(event)=>{
+        <input type='file' onChange={(event) => {
           setImageUpload(event.target.files[0])
         }}></input>
-        {/*<button onClick={uploadImage}>Subir imagen</button>*/}
+
       </div>
       <div className='post'>
-       
+
         <Formik
           initialValues={{ title: '', content: '' }}
           validate={values => {
@@ -56,22 +59,46 @@ const log = () => {
             if (!values.title) {
               errors.title = 'El titulo es requerido';
             }
-           if (!value) {
+            if (!value) {
               errors.content = 'El contenido es requerido';
             }
 
             return errors;
           }}
           onSubmit={(values, { setSubmitting }) => {
-           //Llamamos a la funcion para poder guardar el post y la imagen
-            addPostUser(values.title, value, "Salud",user.uid, imageUpload);
+            //Llamamos a la funcion para poder guardar el post y la imagen
+            addPostUser(values.title, value, user.uid, imageUpload,category , lit);
           }}
         >
           {({ isSubmitting }) => (
             <Form className='form-box' style={formStyle}>
               <Field type="text" name="title" placeholder="Título" style={inputStyle} />
               <ErrorMessage name="title" component="div" style={{ color: 'red' }} />
+              <label style={{ textAlign: 'right', alignItems: 'start', float: 'left' }}> Categoría</label>
+              <br></br>
+              <select style={{ width: '100px', float: 'left', border: 'none' }}
+                onChange={(e) => handleCategoryChange(e)}
+                className="browser-default custom-select"
+              >
+                {Cat.map((address, key) => (
+                  <option key={key} value={key}>
+                    {address}
+                  </option>
+                ))}
+              </select>
+              <br></br>
+              <br></br>
 
+              {literatura ? <div><label style={{ width: '100px', float: 'left', border: 'none' }}>
+                Tipo de obra
+                <select onChange={handleChange} style={{border: 'none' }}>
+                  <option value="poesia">Poesía</option>
+                  <option value="cuento">Cuento</option>
+                  <option value="novela">Novela</option>
+                  <option value="verso libre">Verso Libre</option>
+                </select>
+              </label> <br/><br/><br/></div>: null}
+              
               <Editor style={textareaStyle}
                 apiKey='qnppcppwb4gg50aqml9w8o24jjb5zvdqf3nglhidqvfndifz'
                 initialValue={initialValue}
@@ -96,12 +123,12 @@ export default AddPost
 const formStyle = {
 
   height: '100vh',
-  
+
   /* border: 1px solid red; */
   margin: '0vw',
   padding: '5vw',
   //position: 'relative',
-  border:'0'
+  border: '0'
   /* position:relative for .prevBtn and .nextBtn position:absolute; */
 }
 
@@ -113,7 +140,7 @@ const inputStyle = {
   border: '0',
   borderRadius: '5px',
   fontSize: '30px',
-  fontWeight:'bold'
+  fontWeight: 'bold'
 }
 
 const textareaStyle = {

@@ -32,7 +32,10 @@ useEffect(() => {
                     
                     </Card.Text>
                     <Card.Footer style={{ textAlign:'Left'}} >{new Date(post.date.seconds * 1000).toLocaleDateString("es-MX")}</Card.Footer>
-                    <Link to={'/view/post'} state={{data:post}}>ContinuarLeyendo</Link>
+                    <Link to={'/view/post'} state={{data:post}}>Continuar Leyendo</Link>
+                    <Link to={'/user/editmypost'} state={{data:post}}>Editar</Link>
+                    <Link to={'/view/post'} state={{data:post}}>Borrar</Link>
+
                  
                 </Card.Body>
             </Card>
