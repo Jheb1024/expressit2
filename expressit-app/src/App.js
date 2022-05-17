@@ -45,7 +45,7 @@ onAuthStateChanged(auth, (usuarioFirebase)=>{
       <Route path='/ourstory' element={<OurStory/>}></Route>  
     </Routes> 
     <Routes>
-      <Route path='/user/home' element={<Home/>}></Route>
+      <Route path='/user/home' element={usuarioGlobal && <Home user={usuarioGlobal}/>}></Route>
     </Routes>
     <Routes>
       <Route path='/user/addpost' element={usuarioGlobal && <AddPost user={usuarioGlobal}/>}></Route>

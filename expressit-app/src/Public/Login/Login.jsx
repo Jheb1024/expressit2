@@ -3,7 +3,10 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 import {Link} from "react-router-dom";
 import {firebaseApp} from "C:/Users/jhan_/Documents/Expressit2/expressit2/expressit-app/src/Auth/firebase-config.js"
-
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import {Container, Row, Col, FormLabel} from 'react-bootstrap'
+import registerImage from "C:/Users/jhan_/Documents/Expressit2/expressit2/expressit-app/src/Assets/images/97.png";
+import './Login.css'
 function Login() {
 
     const auth = getAuth(firebaseApp);
@@ -37,11 +40,10 @@ function Login() {
         }
     }
 
-    async function submitHandler(e) {
-        e.preventDefault();
+    async function submitHandler(email, pass) {
+        
 
-        const email = e.target.elements.email.value;
-        const pass = e.target.elements.password.value;
+        
         console.log("submit", email, pass);
 
         await iniciarSesion(email, pass).then(() => {
@@ -81,32 +83,71 @@ function Login() {
     }
 
   return (
-    <div className="container">
-            <div className="wrapper fadeInDown">
-            <div id="formContent">
-                <div className="fadeIn first">
-                    Iniciar Sesion
-                </div>
+    <div><h1>Inicio de Sesión</h1>
+    <Container>
+      <Row>
+      <Col>
+      <div>
+        <img src={registerImage} style={{width:'600px', height:'400px'}}></img>
+      </div>
+      </Col>
+      <Col>
+      <div className='registerForm' style={{textAlign:'center', height:'300px'}}>
+      <Formik
+      initialValues={{ email: '', password: ''}}
+      validate={values => {
+        const errors = {};
+        if (!values.email) {
+          errors.email = 'Se requiere de un correo';
+        } else if (
+          !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+        ) {
+          errors.email = 'Correo invalido';
+        }
+        if (!values.password) {
+          errors.password = "Se requiere contraseña";
+        }else{
+          if (values.password.length < 8) {
+          errors.password = "La contraseña es demasiado débil";
+        }
+        }
+        
+        
+        return errors;
+      }}
+      onSubmit={(values, { setSubmitting }) => {
+        submitHandler(values.email,values.password)
+      }}
+    >
+      {({ isSubmitting }) => (
+       
 
+        
+        <Form >
+          
+          <div className='fielderror'>
+          <Field type="email" name="email" placeholder='Correo' className='field'/>
+          <ErrorMessage name="email" component="div" className='error'/>
+          </div>
+          <div className='fielderror'>
+          <Field type="password" name="password"  placeholder='Contraseña' className='field'/>
+          <ErrorMessage name="password" component="div" className='error' />
+          </div>
+          <button type="submit" disabled={isSubmitting} className='buttonForm'>
+            Entrar
+          </button>
+          <br></br>
+          <Link style={{marginLeft:'100px', color:'black'}} to='/register'>¿Aún no tienes una cuenta?</Link>
+        </Form>
+       
+      )}
+    </Formik> </div>
+      </Col>
+      </Row>
+    </Container>
+   
 
-                <form className="formulario" onSubmit={submitHandler}>
-                    <input type="text" id="email" className="fadeIn second" name="email" placeholder="Usuario" />
-                    <input type="password" id="password" className="fadeIn third" name="login" placeholder="Contraseña" />
-                    <input type="submit" className="fadeIn fourth" value="Entrar" />
-                </form>
-
-
-                <div id="formFooter">
-                    <Link to="/">¿Olvidaste tu contraseña?</Link>
-                    <p>¿Aun no tienes una cuenta?</p>
-                    <Link to="/registro-paciente"> Paciente</Link>
-                    <br></br>
-                    <Link to="/registro-psicologo"> Psicologo</Link>
-                </div>
-
-            </div>
-            </div>
-        </div>
+    </div>
   )
 }
 

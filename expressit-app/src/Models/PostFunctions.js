@@ -9,9 +9,12 @@ import {
   Timestamp,
   updateDoc,
   getDoc,
+  runTransaction,
+  deleteDoc,
 } from "firebase/firestore";
 import { ref, uploadBytes } from "firebase/storage";
 import { v4 } from "uuid";
+import { async } from "@firebase/util";
 
 const db = getFirestore(firebaseApp);
 
@@ -171,3 +174,58 @@ async function getAuthorName(userId) {
     console.log("No such document!");
   }
 }
+
+export async function addLikeToPost(idPost){
+
+  const docRef = doc(db,"likes", "N9s4oOPcKOZ510vPPU7V");
+  try {
+    await runTransaction(db, async(transaction)=>{
+      const sfDoc = await transaction.get(docRef);
+
+      if (!sfDoc.exists()) {
+        throw "El documento no existe";
+      }
+      
+      const newLike = sfDoc.data().likes + 1;
+      transaction.update(docRef, {likes:newLike});
+
+      console.log("Se actualizaron los likes");
+
+    })
+  } catch (error) {
+    console.log("Hubo un error en la transaccion");
+  }
+}
+export async function decLikeToPost(idPost){
+
+  const docRef = doc(db,"likes", "N9s4oOPcKOZ510vPPU7V");
+  try {
+    await runTransaction(db, async(transaction)=>{
+      const sfDoc = await transaction.get(docRef);
+
+      if (!sfDoc.exists()) {
+        throw "El documento no existe";
+      }
+      
+      const newLike = sfDoc.data().likes - 1;
+      transaction.update(docRef, {likes:newLike});
+
+      console.log("Se actualizaron los likes");
+
+    })
+  } catch (error) {
+    console.log("Hubo un error en la transaccion");
+  }
+}
+
+
+
+export async function deletePostUser(idPost, user){
+   await deleteDoc(doc(db, "allPosts", idPost.idPost)).then(()=>console.log("Se borro primer doc"))
+  
+    await deleteDoc(doc(db, "postsUser", user.uid, 'posts', idPost.idPost))
+    .then(()=>console.log("Se eliminó el segundo post")).catch((e)=>console.error(e.getMessage))
+  
+}
+
+

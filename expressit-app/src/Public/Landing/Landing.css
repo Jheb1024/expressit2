@@ -1,0 +1,22 @@
+.texto{
+    float: left;
+    /*width: 400px;*/
+  /*position: absolute;*/
+  width: 100px;
+  height: 344px;
+  padding: 10px;
+  padding-top: 50px;
+  padding-left: 70px;
+  margin: 30px;
+  
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 48px;
+  line-height: 65px;
+  
+  color: #000000;
+  
+  text-shadow: 0px 4px 0px rgba(115, 111, 111, 0.15);
+  
+  }

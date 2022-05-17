@@ -1,45 +1,54 @@
-import React, {useEffect, useState}from 'react'
-import {Card} from 'react-bootstrap'
-import {onSnapshot,collection,getFirestore} from 'firebase/firestore'
+import React, { useEffect, useState } from 'react'
+import { Card, Nav, Col, Row, Container, Button } from 'react-bootstrap'
+import { onSnapshot, collection, getFirestore } from 'firebase/firestore'
 import { firebaseApp } from '../../Auth/firebase-config';
 import { Link } from 'react-router-dom';
+import SidebarUser from '../SidebarUser/SidebarUser';
+import {FaEdit} from 'react-icons/fa';
+import {RiDeleteBin6Line} from 'react-icons/ri'
+import PostPrev from './PostPrev';
+const db = getFirestore(firebaseApp);
 
-const db= getFirestore(firebaseApp);
+function MyPosts({ user }) {
+  const [posts, setPosts] = useState([]);
 
-function MyPosts({user}) {
-    const [posts, setPosts] = useState([]);
+  
 
-useEffect(() => {
-  function getPosts(){
-    onSnapshot(collection(db, "postsUser", user.uid, "posts" ),(snapshop)=>{
-       setPosts(snapshop.docs.map((doc)=>doc.data()))
+
+  useEffect(() => {
+    function getPosts() {
+      onSnapshot(collection(db, "postsUser", user.uid, "posts"), (snapshop) => {
+        setPosts(snapshop.docs.map((doc) => doc.data()))
       })
-  }
+    }
 
-  return () => {
-    getPosts()
-  }
-}, [])
+    return () => {
+      getPosts()
+    }
+  }, [])
   return (
-    <div>MyPosts
-        { posts?.map(post=>(
-                <Card style={{ width: '90%', margin:'15px', padding:'25px' }}>
-                <Card.Body>
-                    <Card.Title style={{ textAlign:'Left'}}>{post.title} </Card.Title>
-                    <Card.Subtitle className="mb-2 text-muted" style={{ textAlign:'Left'}}></Card.Subtitle>
-                    <Card.Text style={{ textAlign:'Left'}}>
-                    <div dangerouslySetInnerHTML={{__html: post.content.substring(0,50)}} />
-                    
-                    </Card.Text>
-                    <Card.Footer style={{ textAlign:'Left'}} >{new Date(post.date.seconds * 1000).toLocaleDateString("es-MX")}</Card.Footer>
-                    <Link to={'/view/post'} state={{data:post}}>Continuar Leyendo</Link>
-                    <Link to={'/user/editmypost'} state={{data:post}}>Editar</Link>
-                    <Link to={'/view/post'} state={{data:post}}>Borrar</Link>
 
-                 
-                </Card.Body>
-            </Card>
-            )) }
+    <div>
+      <br/>
+      <h2>Mis publicaciones</h2>
+    <Container>
+      <Row style={{ padding: '0' }}>
+        <Col xs={1} style={{
+          position: 'fixed', wordWrap: 'break-word', minHeight: '120px',
+          width: '252px', textAlign: 'center'
+        }}>
+          <SidebarUser style={{}}></SidebarUser>
+        </Col>
+        <Col style={{ paddingLeft: '100px' }}>
+            {posts?.map(post => (
+              <PostPrev post={post} user={user}/>
+            ))}
+          </Col>
+        </Row>
+      </Container>
+
+
+
     </div>
   )
 }

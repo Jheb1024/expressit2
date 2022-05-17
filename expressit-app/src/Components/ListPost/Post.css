@@ -27,3 +27,22 @@ margin: 10px;
     margin-top: 20px;
     padding: 10px;
 }
+.share{
+    display: left;
+    text-align: center;
+    margin: 30px;
+    padding: 5px;
+    background: blue;
+    color: white;
+}
+.fb-share-button{
+    color: white;
+}
+.fb-xfbml-parse-ignore{
+    color: white;
+    text-decoration: none;
+    
+}
+:hover.fb-xfbml-parse-ignore{
+    color: white;
+}
